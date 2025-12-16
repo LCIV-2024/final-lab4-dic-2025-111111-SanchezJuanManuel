@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
@@ -110,6 +111,35 @@ class ScoreboardServiceTest {
     @Test
     void testGetScoreboardByPlayer_Success() {
         // TODO: Implementar el test para testGetScoreboardByPlayer_Success
+
+        Game game1 = new Game();
+        game1.setPuntaje(10);
+        game1.setResultado("GANADO");
+
+        Game game2 = new Game();
+        game2.setPuntaje(5);
+        game2.setResultado("PERDIDO");
+
+        Game game3 = new Game();
+        game3.setPuntaje(15);
+        game3.setResultado("GANADO");
+
+        List<Game> games = List.of(game1, game2, game3);
+
+        Mockito.when(gameRepository.findByJugador(player1))
+                .thenReturn(games);
+
+        ScoreboardDTO resultado = scoreboardService.getScoreboardByPlayer(1L);
+
+        assertNotNull(resultado);
+
+        assertEquals(30, resultado.getPuntajeTotal());
+        assertEquals(3L, resultado.getPartidasJugadas());
+        assertEquals(2L, resultado.getPartidasGanadas());
+        assertEquals(1L, resultado.getPartidasPerdidas());
+
+        Mockito.verify(gameRepository).findByJugador(player1);
+
         
     }
 

@@ -21,7 +21,7 @@ public class WordService {
                 .collect(Collectors.toList());
     }
     
-    private WordDTO toDTO(Word word) {
+    WordDTO toDTO(Word word) {
         return new WordDTO(word.getId(), word.getPalabra(), word.getUtilizada());
     }
 }

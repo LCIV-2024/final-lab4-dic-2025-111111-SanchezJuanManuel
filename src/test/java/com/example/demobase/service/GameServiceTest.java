@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
@@ -56,6 +57,37 @@ class GameServiceTest {
     @Test
     void testStartGame_Success() {
         // TODO: Implementar el test para testStartGame_Success
+        GameInProgress juego = new GameInProgress();
+        juego.setJugador(player);
+        juego.setPalabra(word);
+        juego.setFechaInicio(LocalDateTime.now());
+
+        Mockito.when(playerRepository.findById(1L))
+                .thenReturn(Optional.of(player));
+
+        Mockito.when(gameInProgressRepository.findByJugadorIdOrderByFechaInicioDesc(1L))
+                .thenReturn(List.of(juego));
+
+        Mockito.when(wordRepository.findByPalabra(word.getPalabra()))
+                .thenReturn(Optional.of(word));
+
+        GameResponseDTO responseMock = new GameResponseDTO();
+        responseMock.setPalabraCompleta(true);
+
+        GameService spyService = Mockito.spy(gameService);
+        Mockito.doReturn(responseMock)
+                .when(spyService)
+                .buildResponseFromGameInProgress(juego);
+
+        GameResponseDTO resultado = spyService.startGame(1L);
+
+
+        assertNotNull(resultado);
+        assertTrue(resultado.getPalabraCompleta());
+
+        Mockito.verify(playerRepository).findById(1L);
+        Mockito.verify(gameInProgressRepository).findByJugadorIdOrderByFechaInicioDesc(1L);
+        Mockito.verify(wordRepository).findByPalabra(word.getPalabra());
         
     }
 

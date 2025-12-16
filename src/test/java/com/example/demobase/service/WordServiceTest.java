@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
@@ -39,6 +40,33 @@ class WordServiceTest {
     @Test
     void testGetAllWords() {
         // TODO: Implementar el test para getAllWords
+        WordService spyService = Mockito.spy(wordService);
+
+
+        List<Word> words = List.of(word2, word3);
+
+
+        Mockito.when(wordRepository.findAllOrdered())
+                .thenReturn(words);
+
+        WordDTO dto1 = new WordDTO(1L, "COMPUTADORA", false);
+        WordDTO dto2 = new WordDTO(2L, "TECNOLOGIA", false);
+
+        Mockito.doReturn(dto1).when(spyService).toDTO(word2);
+        Mockito.doReturn(dto2).when(spyService).toDTO(word3);
+
+
+        List<WordDTO> resultado = spyService.getAllWords();
+
+        assertNotNull(resultado);
+        assertEquals(2, resultado.size());
+
+        assertEquals("COMPUTADORA", resultado.get(0).getPalabra());
+        assertEquals("TECNOLOGIA", resultado.get(1).getPalabra());
+
+        Mockito.verify(wordRepository).findAllOrdered();
+        Mockito.verify(spyService).toDTO(word2);
+        Mockito.verify(spyService).toDTO(word3);
         
     }
 

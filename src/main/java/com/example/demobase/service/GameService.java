@@ -151,7 +151,7 @@ public class GameService {
         return response;
     }
     
-    private GameResponseDTO buildResponseFromGameInProgress(GameInProgress gameInProgress) {
+    GameResponseDTO buildResponseFromGameInProgress(GameInProgress gameInProgress) {
         String palabra = gameInProgress.getPalabra().getPalabra().toUpperCase();
         Set<Character> letrasIntentadas = stringToCharSet(gameInProgress.getLetrasIntentadas());
         String palabraOculta = generateHiddenWord(palabra, letrasIntentadas);
